@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 
 import prisma from '../db/prisma.js';
+import { isStringArray } from '../utils/typeGuards.js';
 
 const getAllPosts = async (req: Request, res: Response) => {
   const posts = await prisma.post.findMany();
@@ -15,10 +16,6 @@ const getPostById = async (req: Request, res: Response) => {
   });
   res.status(200).json(posts);
 };
-
-function isStringArray(arr: unknown[]): arr is string[] {
-  return arr.every((item) => typeof item === 'string');
-}
 
 const createPost = async (req: Request, res: Response) => {
   // HACK: replace soon with real user
