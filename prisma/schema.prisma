@@ -24,7 +24,6 @@ model Post {
   createdAt  DateTime     @default(now()) @db.Timestamp
   modifiedAt DateTime     @updatedAt @db.Timestamp
   tags       TagOnPosts[]
-  categoryId Int
 }
 
 model TagOnPosts {
