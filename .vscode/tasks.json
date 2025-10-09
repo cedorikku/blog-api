@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "prisma: generate",
+      "type": "shell",
+      "command": "pnpm prisma generate",
+      "problemMatcher": []
+    },
+    {
+      "label": "tsc: watch - tsconfig.json",
+      "type": "shell",
+      "command": "pnpm tsc --watch",
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch",
+      "dependsOn": ["prisma: generate"]
+    }
+  ]
+}
