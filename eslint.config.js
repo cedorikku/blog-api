@@ -17,6 +17,10 @@ export default defineConfig(
     rules: {
       'no-unused-vars': 'warn',
       'perfectionist/sort-objects': 'off',
+      'typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^(err|req|res|next)$' },
+      ],
     },
   }
 );
