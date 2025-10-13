@@ -15,9 +15,9 @@ export default defineConfig(
   eslintConfigPrettier,
   {
     rules: {
-      'no-unused-vars': 'warn',
       'perfectionist/sort-objects': 'off',
-      'typescript-eslint/no-unused-vars': [
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^(err|req|res|next)$' },
       ],
