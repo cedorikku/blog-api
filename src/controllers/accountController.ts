@@ -1,0 +1,55 @@
+import type { NextFunction, Request, Response } from 'express';
+
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+import prisma from '../db/prisma.js';
+
+const signUpPost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // TODO:  Create validator middleware to ensure these have values
+    const { username, password, name } = req.body;
+
+    if (!username || !password || !name) return res.sendStatus(400);
+
+    const passwordHash = await bcrypt.hash(password, 14);
+    await prisma.user.create({
+      data: {
+        username,
+        password: passwordHash,
+        name,
+      },
+    });
+
+    res.status(201).json({ username, name });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const loginPost = async (req: Request, res: Response) => {
+  if (!req.user) return res.sendStatus(401);
+
+  const token = jwt.sign(
+    { userId: req.user.id }, // payload
+    // secret key
+    process.env.JWT_SECRET_KEY ||
+      (() => {
+        throw new Error('JWT_SECRET_KEY is not defined');
+      })(),
+    {
+      // sign options
+      algorithm: 'HS256',
+      expiresIn: '1h', // TODO: Aim for longer expiration time
+      issuer: 'http://localhost:5000',
+      audience: 'http://localhost:5000',
+    }
+  );
+
+  res.json({ token });
+};
+
+export default {
+  signUpPost,
+  loginPost,
+};
