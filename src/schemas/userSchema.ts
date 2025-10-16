@@ -1,10 +1,16 @@
 import * as z from 'zod';
 
+import prisma from '../db/prisma.js';
+
 export const userSignupSchema = z.object({
   username: z
     .string()
     .min(3, 'Username too short')
-    .max(255, 'Username is too long'),
+    .max(255, 'Username is too long')
+    .refine(async (username) => {
+      const user = await prisma.user.findFirst({ where: { username } });
+      return !user;
+    }, `Username already exists`),
   password: z
     .string()
     .min(8, 'Password is too short')
