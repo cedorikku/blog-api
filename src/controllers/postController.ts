@@ -43,7 +43,7 @@ const createPost = async (req: Request, res: Response) => {
           create: {
             username: 'test',
             password: 'testPassword',
-            name: 'John Doe'
+            name: 'John Doe',
           },
           where: { id: userId },
         },
