@@ -9,7 +9,7 @@ export function validate(schema: z.ZodObject) {
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
-        return res.json(z.treeifyError(err));
+        return res.status(400).json(z.treeifyError(err));
       }
 
       next(err);
