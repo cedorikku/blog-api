@@ -23,6 +23,7 @@ model Post {
   content    String
   createdAt  DateTime     @default(now()) @db.Timestamp
   modifiedAt DateTime     @updatedAt @db.Timestamp
+  published  Boolean      @default(false)
   tags       TagOnPosts[]
 }
 
