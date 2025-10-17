@@ -10,12 +10,14 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-
-  const posts = await prisma.post.findUnique({
-    where: { id: id },
+  const postId = parseInt(req.params.id);
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
   });
-  res.status(200).json(posts);
+
+  if (!post) return res.sendStatus(404);
+
+  res.status(200).json(post);
 };
 
 const createPost = async (req: Request, res: Response) => {
@@ -67,11 +69,17 @@ const createPost = async (req: Request, res: Response) => {
 
 const deletePost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.id);
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+
+  if (!post) return res.sendStatus(404);
+
   await prisma.post.delete({
     where: { id: postId },
   });
 
-  res.status(204);
+  res.sendStatus(204);
 };
 
 // TODO: (low) Editing Posts
