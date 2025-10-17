@@ -19,23 +19,24 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 const createPost = async (req: Request, res: Response) => {
-  // HACK: replace soon with real user
-  const userId = 1;
   const { title, content, tags }: CreatePostSchema = req.body;
+
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
 
   const newPost = await prisma.post.create({
     data: {
       title,
       content,
       author: {
-        // HACK: replace soon with real user
         connectOrCreate: {
           create: {
-            username: 'test',
-            password: 'testPassword',
-            name: 'John Doe',
+            username: req.user.username,
+            password: req.user.password,
+            name: req.user.name,
           },
-          where: { id: userId },
+          where: { id: req.user.id },
         },
       },
       tags: {
