@@ -19,6 +19,7 @@ export const createPostSchema = z.object({
         });
       }
     }),
+  published: z.boolean().optional(),
 });
 
 export type CreatePostSchema = z.infer<typeof createPostSchema>;

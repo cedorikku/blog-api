@@ -21,7 +21,7 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 const createPost = async (req: Request, res: Response) => {
-  const { title, content, tags }: CreatePostSchema = req.body;
+  const { title, content, tags, published }: CreatePostSchema = req.body;
 
   if (!req.user) {
     return res.sendStatus(401);
@@ -31,6 +31,7 @@ const createPost = async (req: Request, res: Response) => {
     data: {
       title,
       content,
+      published,
       author: {
         connect: { id: req.user.id },
       },
