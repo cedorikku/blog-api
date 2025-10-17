@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
 
+import type { CreatePostSchema } from '../schemas/postSchema.js';
+
 import prisma from '../db/prisma.js';
-import { isStringArray } from '../utils/typeGuards.js';
 
 const getAllPosts = async (req: Request, res: Response) => {
   const posts = await prisma.post.findMany();
@@ -20,18 +21,7 @@ const getPostById = async (req: Request, res: Response) => {
 const createPost = async (req: Request, res: Response) => {
   // HACK: replace soon with real user
   const userId = 1;
-  const { title, content, tags } = req.body;
-
-  // HACK: Temporary validation for these endpoints
-  if (!title.trim()) {
-    return res.status(400).send("Ensure that title isn't empty.");
-  } else if (!content.trim()) {
-    return res.status(400).send("Ensure that content isn't empty.");
-  } else if (!Array.isArray(tags) || !isStringArray(tags)) {
-    return res
-      .status(400)
-      .send('Tags must be defined and formatted in an array of strings');
-  }
+  const { title, content, tags }: CreatePostSchema = req.body;
 
   const newPost = await prisma.post.create({
     data: {
