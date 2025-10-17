@@ -67,11 +67,11 @@ const createPost = async (req: Request, res: Response) => {
 
 const deletePost = async (req: Request, res: Response) => {
   const postId = parseInt(req.params.id);
-  const { title } = await prisma.post.delete({
+  await prisma.post.delete({
     where: { id: postId },
   });
 
-  res.send(204).send(`The post "${title}" has been successfully deleted`);
+  res.status(204);
 };
 
 // TODO: (low) Editing Posts
