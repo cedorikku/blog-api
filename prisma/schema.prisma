@@ -19,7 +19,7 @@ model Post {
   id         Int          @id @default(autoincrement())
   author     User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
   authorId   Int?
-  title      String
+  title      String       @db.VarChar(50)
   content    String
   createdAt  DateTime     @default(now()) @db.Timestamp
   modifiedAt DateTime     @updatedAt @db.Timestamp
