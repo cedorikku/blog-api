@@ -11,7 +11,7 @@ const errorHandler = (
   console.error(err);
 
   if (isAuthenticationError(err)) {
-    return res.status(err.status).json({ message: err.message });
+    return res.sendStatus(err.status);
   }
 
   res.sendStatus(500);
