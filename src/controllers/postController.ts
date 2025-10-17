@@ -50,6 +50,23 @@ const createPost = async (req: Request, res: Response) => {
         })),
       },
     },
+    include: {
+      author: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+        },
+      },
+      tags: {
+        select: {
+          id: true,
+          tag: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
   });
 
   res.status(201).json(newPost);
