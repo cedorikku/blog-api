@@ -30,14 +30,7 @@ const createPost = async (req: Request, res: Response) => {
       title,
       content,
       author: {
-        connectOrCreate: {
-          create: {
-            username: req.user.username,
-            password: req.user.password,
-            name: req.user.name,
-          },
-          where: { id: req.user.id },
-        },
+        connect: { id: req.user.id },
       },
       tags: {
         create: tags.map((tagName) => ({
