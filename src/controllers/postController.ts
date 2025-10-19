@@ -56,7 +56,6 @@ const createPost = async (req: Request, res: Response) => {
       },
       tags: {
         select: {
-          id: true,
           tag: {
             select: { id: true, name: true },
           },
