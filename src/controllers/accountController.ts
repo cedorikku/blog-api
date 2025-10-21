@@ -33,9 +33,9 @@ const loginPost = async (req: Request, res: Response) => {
     { userId: req.user.id }, // payload
     // secret key
     process.env.JWT_SECRET_KEY ||
-    (() => {
-      throw new Error('JWT_SECRET_KEY is not defined');
-    })(),
+      (() => {
+        throw new Error('JWT_SECRET_KEY is not defined');
+      })(),
     {
       // sign options
       algorithm: 'HS256',

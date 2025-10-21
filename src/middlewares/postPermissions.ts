@@ -6,8 +6,7 @@ export enum PostAction {
   Delete,
 }
 
-  // NOTE: Doesn't consider admin permissions yet
-export const permitAction  = (action: PostAction) => {
+export const permitAction = (action: PostAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const post = req.post!;
 
