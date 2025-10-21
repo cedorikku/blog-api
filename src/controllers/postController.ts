@@ -10,14 +10,7 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
-  const postId = parseInt(req.params.id);
-  const post = await prisma.post.findUnique({
-    where: { id: postId },
-  });
-
-  if (!post) return res.sendStatus(404);
-
-  res.status(200).json(post);
+  res.status(200).json(req.post);
 };
 
 const createPost = async (req: Request, res: Response) => {
@@ -68,15 +61,8 @@ const createPost = async (req: Request, res: Response) => {
 };
 
 const deletePost = async (req: Request, res: Response) => {
-  const postId = parseInt(req.params.id);
-  const post = await prisma.post.findUnique({
-    where: { id: postId },
-  });
-
-  if (!post) return res.sendStatus(404);
-
   await prisma.post.delete({
-    where: { id: postId },
+    where: { id: req.post!.id },
   });
 
   res.sendStatus(204);
