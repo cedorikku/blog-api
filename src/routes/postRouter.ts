@@ -31,4 +31,12 @@ router.delete(
 
 // router.patch('/:id', postController.editPost)
 
+router.patch(
+  '/:id/publish',
+  auth,
+  loadPost,
+  permitAction(PostAction.Edit),
+  postController.publishPost
+);
+
 export default router;

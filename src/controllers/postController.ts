@@ -68,11 +68,19 @@ const deletePost = async (req: Request, res: Response) => {
   res.sendStatus(204);
 };
 
-// TODO: (low) Editing Posts
+const publishPost = async (req: Request, res: Response) => {
+  const updatedPost = await prisma.post.update({
+    where: { id: req.post!.id },
+    data: { published: true },
+  });
+
+  res.status(200).json(updatedPost);
+}
 
 export default {
   getAllPosts,
   getPostById,
   createPost,
   deletePost,
+  publishPost,
 };
