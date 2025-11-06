@@ -7,6 +7,9 @@ export const userSignupSchema = z.object({
     .string()
     .min(3, 'Username too short')
     .max(255, 'Username is too long')
+    .refine((username) => !/\s/.test(username), {
+      message: 'Username cannot contain spaces',
+    })
     .refine(async (username) => {
       const user = await prisma.user.findFirst({ where: { username } });
       return !user;
