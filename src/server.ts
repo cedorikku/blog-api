@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 
 import passport from './config/passport.js';
 import errorHandler from './middlewares/error.js';
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(helmet());
 
 app.use(passport.initialize());
 
