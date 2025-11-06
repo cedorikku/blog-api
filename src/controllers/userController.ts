@@ -6,7 +6,7 @@ const checkUsernameAvailability = async (req: Request, res: Response) => {
   const { username } = req.params;
 
   const user = await prisma.user.findUnique({
-    where: { username },
+    where: { username: username.trim().toLowerCase() },
   });
 
   res.status(200).json({ availability: !user });

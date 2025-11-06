@@ -12,7 +12,9 @@ export const userSignupSchema = z.object({
       message: 'Username cannot contain spaces',
     })
     .refine(async (username) => {
-      const user = await prisma.user.findFirst({ where: { username } });
+      const user = await prisma.user.findFirst({
+        where: { username: username.toLowerCase() },
+      });
       return !user;
     }, `Username already exists`),
   password: z

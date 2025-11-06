@@ -15,7 +15,7 @@ import prisma from '../db/prisma.js';
 const localCallback: VerifyFunction = async (username, password, done) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { username: username },
+      where: { username: username.trim().toLowerCase() },
     });
 
     if (!user) {
