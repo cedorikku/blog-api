@@ -5,8 +5,9 @@ import prisma from '../db/prisma.js';
 export const userSignupSchema = z.object({
   username: z
     .string()
+    .trim()
     .min(3, 'Username too short')
-    .max(255, 'Username is too long')
+    .max(30, 'Username is too long')
     .refine((username) => !/\s/.test(username), {
       message: 'Username cannot contain spaces',
     })
