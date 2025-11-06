@@ -7,6 +7,7 @@ import errorHandler from './middlewares/error.js';
 import accountRouter from './routes/accountRouter.js';
 import indexRouter from './routes/indexRouter.js';
 import postRouter from './routes/postRouter.js';
+import userRouter from './routes/userRouter.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/account', accountRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/users', userRouter);
 
 app.use(errorHandler);
 
