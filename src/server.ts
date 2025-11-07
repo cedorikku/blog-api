@@ -19,7 +19,7 @@ app.use(helmet());
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
-app.use('/account', accountRouter);
+app.use('/api/account', accountRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/users', userRouter);
 
