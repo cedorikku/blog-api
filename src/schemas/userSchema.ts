@@ -16,7 +16,7 @@ export const userSignupSchema = z.object({
         where: { username: username.toLowerCase() },
       });
       return !user;
-    }, `Username already exists`),
+    }, 'Username already exists'),
   password: z
     .string()
     .min(8, 'Password is too short')
