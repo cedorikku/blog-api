@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import type { CreatePostSchema } from '../schemas/postSchema.js';
 
 import prisma from '../db/prisma.js';
+import slugify from '../utils/slugify.js';
 
 const getAllPosts = async (req: Request, res: Response) => {
   const posts = await prisma.post.findMany();
@@ -38,6 +39,7 @@ const createPost = async (req: Request, res: Response) => {
           },
         })),
       },
+      slug: await slugify(title),
     },
     include: {
       author: {
@@ -75,7 +77,7 @@ const publishPost = async (req: Request, res: Response) => {
   });
 
   res.status(200).json(updatedPost);
-}
+};
 
 export default {
   getAllPosts,
