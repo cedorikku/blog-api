@@ -20,6 +20,7 @@ model Post {
   author     User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
   authorId   Int?
   title      String       @db.VarChar(50)
+  slug       String       @unique @db.VarChar(50)
   content    String
   createdAt  DateTime     @default(now()) @db.Timestamp
   modifiedAt DateTime     @updatedAt @db.Timestamp
