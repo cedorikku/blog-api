@@ -11,7 +11,7 @@ const router = Router();
 
 router.get('/', postController.getAllPosts);
 
-router.get('/blog', postController.getPublishedPosts);
+router.get('/published', postController.getPublishedPosts);
 
 router.get('/:username/:slug', postController.getPublishedPostByUserAndSlug);
 
