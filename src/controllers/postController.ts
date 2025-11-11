@@ -10,6 +10,38 @@ const getAllPosts = async (req: Request, res: Response) => {
   res.status(200).json(posts);
 };
 
+const getPublishedPosts = async (req: Request, res: Response) => {
+  const published = await prisma.post.findMany({
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+      modifiedAt: true,
+      slug: true,
+      author: {
+        select: { username: true, name: true },
+      },
+      tags: {
+        select: {
+          tag: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
+    where: {
+      published: true,
+    },
+  });
+
+  const posts = published.map((post) => ({
+    ...post,
+    tags: post.tags.map((t) => t.tag),
+  }));
+
+  res.status(200).json(posts);
+};
+
 const getPostById = async (req: Request, res: Response) => {
   res.status(200).json(req.post);
 };
@@ -85,4 +117,5 @@ export default {
   createPost,
   deletePost,
   publishPost,
+  getPublishedPosts,
 };

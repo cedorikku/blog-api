@@ -11,6 +11,8 @@ const router = Router();
 
 router.get('/', postController.getAllPosts);
 
+router.get('/blog', postController.getPublishedPosts);
+
 router.get(
   '/:id',
   authAllowGuest,
