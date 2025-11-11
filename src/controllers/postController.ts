@@ -42,6 +42,47 @@ const getPublishedPosts = async (req: Request, res: Response) => {
   res.status(200).json(posts);
 };
 
+const getPublishedPostByUserAndSlug = async (req: Request, res: Response) => {
+  const { username, slug } = req.params;
+
+  const published = await prisma.post.findFirst({
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      createdAt: true,
+      modifiedAt: true,
+      slug: true,
+      author: {
+        select: { username: true, name: true },
+      },
+      tags: {
+        select: {
+          tag: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
+    where: {
+      published: true,
+      author: { username },
+      slug,
+    },
+  });
+
+  if (!published) {
+    return res.sendStatus(404);
+  }
+
+  const post = {
+    ...published,
+    tags: published.tags.map((t) => t.tag),
+  };
+
+  res.status(200).json(post);
+};
+
 const getPostById = async (req: Request, res: Response) => {
   res.status(200).json(req.post);
 };
@@ -118,4 +159,5 @@ export default {
   deletePost,
   publishPost,
   getPublishedPosts,
+  getPublishedPostByUserAndSlug,
 };

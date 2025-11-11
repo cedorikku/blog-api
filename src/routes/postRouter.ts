@@ -13,6 +13,8 @@ router.get('/', postController.getAllPosts);
 
 router.get('/blog', postController.getPublishedPosts);
 
+router.get('/:username/:slug', postController.getPublishedPostByUserAndSlug);
+
 router.get(
   '/:id',
   authAllowGuest,
