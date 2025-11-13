@@ -8,8 +8,34 @@ export const userSignupSchema = z.object({
     .trim()
     .min(3, 'Username too short')
     .max(30, 'Username is too long')
-    .refine((username) => !/\s/.test(username), {
-      message: 'Username cannot contain spaces',
+    .superRefine((val, ctx) => {
+      if (/\s/.test(val)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Username contains spaces`,
+        });
+      }
+
+      if (/\W/.test(val)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Usernam contains special characters`,
+        });
+      }
+
+      if (/([_])\1/.test(val)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Username contains double underscores`,
+        });
+      }
+
+      if (/^[^a-zA-Z0-9]/.test(val)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Username starting character is non-alphanumeric`,
+        });
+      }
     })
     .refine(async (username) => {
       const user = await prisma.user.findFirst({
