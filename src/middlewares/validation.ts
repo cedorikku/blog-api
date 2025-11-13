@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from 'express';
 
 import * as z from 'zod';
 
+import { formatZodErrors } from '../utils/formatZodError.js';
+
 export function validate(schema: z.ZodObject) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -9,11 +11,7 @@ export function validate(schema: z.ZodObject) {
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
-        if (err.issues[0].message === 'Username already exists') {
-          return res.status(409).json(z.treeifyError(err));
-        }
-
-        return res.status(400).json(z.treeifyError(err));
+        return res.status(400).json(formatZodErrors(err));
       }
 
       next(err);
