@@ -33,15 +33,15 @@ const loginPost = async (req: Request, res: Response) => {
     { userId: req.user.id }, // payload
     // secret key
     process.env.JWT_SECRET_KEY ||
-      (() => {
-        throw new Error('JWT_SECRET_KEY is not defined');
-      })(),
+    (() => {
+      throw new Error('JWT_SECRET_KEY is not defined');
+    })(),
     {
       // sign options
       algorithm: 'HS256',
-      expiresIn: '1h', // TODO: Aim for longer expiration time
-      issuer: 'http://localhost:5000',
-      audience: 'http://localhost:5000',
+      expiresIn: '2h', // TODO: Aim for longer expiration time
+      issuer: process.env.JWT_ISSUER,
+      audience: process.env.JWT_AUDIENCE,
     }
   );
 

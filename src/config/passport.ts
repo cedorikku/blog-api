@@ -41,8 +41,8 @@ const jwtOptions: StrategyOptionsWithoutRequest = {
     (() => {
       throw new Error('JWT_SECRET_KEY is not defined');
     })(),
-  issuer: 'http://localhost:5000',
-  audience: 'http://localhost:5000',
+  issuer: process.env.JWT_ISSUER,
+  audience: process.env.JWT_AUDIENCE,
 };
 
 const jwtCallback: VerifyCallback = async (jwt_payload, done) => {
