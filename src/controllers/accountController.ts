@@ -29,23 +29,36 @@ const signUpPost = async (req: Request, res: Response, next: NextFunction) => {
 const loginPost = async (req: Request, res: Response) => {
   if (!req.user) return res.sendStatus(401);
 
-  const token = jwt.sign(
-    { userId: req.user.id }, // payload
-    // secret key
-    process.env.JWT_SECRET_KEY ||
-    (() => {
-      throw new Error('JWT_SECRET_KEY is not defined');
-    })(),
-    {
-      // sign options
-      algorithm: 'HS256',
-      expiresIn: '2h', // TODO: Aim for longer expiration time
-      issuer: process.env.JWT_ISSUER,
-      audience: process.env.JWT_AUDIENCE,
-    }
-  );
+  const key = process.env.JWT_SECRET_KEY;
+  if (!key) {
+    throw new Error('JWT_SECRET_KEY is not defined');
+  }
 
-  res.json({ token });
+  const refreshToken = jwt.sign({ userId: req.user.id }, key, {
+    // sign options
+    algorithm: 'HS256',
+    expiresIn: '30d',
+    issuer: process.env.JWT_ISSUER,
+    audience: process.env.JWT_AUDIENCE,
+    // domain: ''
+  });
+
+  const accessToken = jwt.sign({ userId: req.user.id }, key, {
+    algorithm: 'HS256',
+    expiresIn: '20m',
+    issuer: process.env.JWT_ISSUER,
+    audience: process.env.JWT_AUDIENCE,
+    // domain: ''
+  });
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
+  });
+
+  res.status(200).json({ accessToken });
 };
 
 export default {
