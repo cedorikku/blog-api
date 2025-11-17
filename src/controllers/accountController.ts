@@ -56,6 +56,7 @@ const loginPost = async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
+    path: '/account/refresh',
   });
 
   res.status(200).json({ accessToken });
