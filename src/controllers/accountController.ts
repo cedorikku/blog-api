@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
+import type { JwtPayload } from 'jsonwebtoken';
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -63,7 +64,35 @@ const loginPost = async (req: Request, res: Response) => {
   res.status(200).json({ accessToken });
 };
 
+// TODO: logout post
+
+const refresh = (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken as string;
+  const refreshKey = process.env.JWT_REFRESH_KEY;
+  if (!refreshKey) throw new Error('JWT_REFRESH_KEY is not defined');
+
+  try {
+    const payload = jwt.verify(refreshToken, refreshKey) as JwtPayload;
+    const userId = payload.userId;
+
+    const accessKey = process.env.JWT_ACCESS_KEY;
+    if (!accessKey) throw new Error('JWT_ACCESS_KEY is not defined');
+
+    const newAccessToken = jwt.sign({ userId }, accessKey, {
+      algorithm: 'HS256',
+      expiresIn: '20m',
+      issuer: process.env.JWT_ISSUER,
+      audience: process.env.JWT_AUDIENCE,
+    });
+
+    return res.status(200).json({ accessToken: newAccessToken });
+  } catch {
+    return res.sendStatus(401);
+  }
+};
+
 export default {
   signUpPost,
   loginPost,
+  refresh,
 };

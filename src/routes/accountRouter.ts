@@ -20,4 +20,6 @@ router.post(
   accountController.loginPost
 );
 
+router.post('/refresh', accountController.refresh);
+
 export default router;
