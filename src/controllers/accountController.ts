@@ -29,12 +29,13 @@ const signUpPost = async (req: Request, res: Response, next: NextFunction) => {
 const loginPost = async (req: Request, res: Response) => {
   if (!req.user) return res.sendStatus(401);
 
-  const key = process.env.JWT_SECRET_KEY;
-  if (!key) {
-    throw new Error('JWT_SECRET_KEY is not defined');
-  }
+  const refreshKey = process.env.JWT_REFRESH_KEY;
+  if (!refreshKey) throw new Error('JWT_REFRESH_KEY is not defined');
 
-  const refreshToken = jwt.sign({ userId: req.user.id }, key, {
+  const accessKey = process.env.JWT_ACCESS_KEY;
+  if (!accessKey) throw new Error('JWT_ACCESS_KEY is not defined');
+
+  const refreshToken = jwt.sign({ userId: req.user.id }, refreshKey, {
     // sign options
     algorithm: 'HS256',
     expiresIn: '30d',
@@ -43,7 +44,7 @@ const loginPost = async (req: Request, res: Response) => {
     // domain: ''
   });
 
-  const accessToken = jwt.sign({ userId: req.user.id }, key, {
+  const accessToken = jwt.sign({ userId: req.user.id }, accessKey, {
     algorithm: 'HS256',
     expiresIn: '20m',
     issuer: process.env.JWT_ISSUER,

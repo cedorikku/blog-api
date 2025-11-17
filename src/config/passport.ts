@@ -37,7 +37,7 @@ const localCallback: VerifyFunction = async (username, password, done) => {
 const jwtOptions: StrategyOptionsWithoutRequest = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey:
-    process.env.JWT_SECRET_KEY ||
+    process.env.JWT_ACCESS_KEY ||
     (() => {
       throw new Error('JWT_SECRET_KEY is not defined');
     })(),
