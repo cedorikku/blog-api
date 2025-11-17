@@ -64,7 +64,16 @@ const loginPost = async (req: Request, res: Response) => {
   res.status(200).json({ accessToken });
 };
 
-// TODO: logout post
+const logout = (req: Request, res: Response) => {
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/account/refresh',
+  });
+
+  return res.sendStatus(204);
+};
 
 const refresh = (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken as string;
@@ -94,5 +103,6 @@ const refresh = (req: Request, res: Response) => {
 export default {
   signUpPost,
   loginPost,
+  logout,
   refresh,
 };
