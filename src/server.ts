@@ -12,7 +12,12 @@ import userRouter from './routes/userRouter.js';
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.JWT_AUDIENCE,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(helmet());
