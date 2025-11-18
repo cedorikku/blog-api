@@ -8,6 +8,14 @@ import type { UserSignupSchema } from '../schemas/userSchema.js';
 
 import prisma from '../db/prisma.js';
 
+const cookieOptions = Object.freeze({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
+  path: '/api/account/refresh',
+});
+
 const signUpPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password, name }: UserSignupSchema = req.body;
@@ -53,23 +61,15 @@ const loginPost = async (req: Request, res: Response) => {
     // domain: ''
   });
 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
-    path: '/account/refresh',
-  });
+  res.cookie('refreshToken', refreshToken, cookieOptions);
 
   res.status(200).json({ accessToken });
 };
 
 const logout = (req: Request, res: Response) => {
   res.clearCookie('refreshToken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/account/refresh',
+    ...cookieOptions,
+    maxAge: 0,
   });
 
   return res.sendStatus(204);
