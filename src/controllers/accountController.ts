@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { CookieOptions, NextFunction, Request, Response } from 'express';
 import type { JwtPayload, SignOptions } from 'jsonwebtoken';
 
 import bcrypt from 'bcryptjs';
@@ -8,13 +8,13 @@ import type { UserSignupSchema } from '../schemas/userSchema.js';
 
 import prisma from '../db/prisma.js';
 
-const cookieOptions = Object.freeze({
+const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict' as const,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
   path: '/api/account/refresh',
-});
+};
 
 const refreshTokenOptions: SignOptions = {
   algorithm: 'HS256',
