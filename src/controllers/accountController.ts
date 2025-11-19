@@ -17,9 +17,16 @@ const cookieOptions = Object.freeze({
 });
 
 const refreshTokenOptions: SignOptions = {
-  // sign options
   algorithm: 'HS256',
   expiresIn: '7d',
+  issuer: process.env.JWT_ISSUER,
+  audience: process.env.JWT_AUDIENCE,
+  // domain: ''
+};
+
+const accessTokenOptions: SignOptions = {
+  algorithm: 'HS256',
+  expiresIn: '20m',
   issuer: process.env.JWT_ISSUER,
   audience: process.env.JWT_AUDIENCE,
   // domain: ''
@@ -59,13 +66,11 @@ const loginPost = async (req: Request, res: Response) => {
     refreshTokenOptions
   );
 
-  const accessToken = jwt.sign({ userId: req.user.id }, accessKey, {
-    algorithm: 'HS256',
-    expiresIn: '20m',
-    issuer: process.env.JWT_ISSUER,
-    audience: process.env.JWT_AUDIENCE,
-    // domain: ''
-  });
+  const accessToken = jwt.sign(
+    { userId: req.user.id },
+    accessKey,
+    accessTokenOptions
+  );
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
 
@@ -93,12 +98,7 @@ const refresh = (req: Request, res: Response) => {
     const accessKey = process.env.JWT_ACCESS_KEY;
     if (!accessKey) throw new Error('JWT_ACCESS_KEY is not defined');
 
-    const newAccessToken = jwt.sign({ userId }, accessKey, {
-      algorithm: 'HS256',
-      expiresIn: '20m',
-      issuer: process.env.JWT_ISSUER,
-      audience: process.env.JWT_AUDIENCE,
-    });
+    const newAccessToken = jwt.sign({ userId }, accessKey, accessTokenOptions);
 
     const newRefreshToken = jwt.sign(
       { userId },
