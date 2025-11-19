@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import type { JwtPayload } from 'jsonwebtoken';
+import type { JwtPayload, SignOptions } from 'jsonwebtoken';
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -12,9 +12,18 @@ const cookieOptions = Object.freeze({
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict' as const,
-  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days * 24 hours * 60 minutes * 60 seconds * 1000 ms
   path: '/api/account/refresh',
 });
+
+const refreshTokenOptions: SignOptions = {
+  // sign options
+  algorithm: 'HS256',
+  expiresIn: '7d',
+  issuer: process.env.JWT_ISSUER,
+  audience: process.env.JWT_AUDIENCE,
+  // domain: ''
+};
 
 const signUpPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,14 +53,11 @@ const loginPost = async (req: Request, res: Response) => {
   const accessKey = process.env.JWT_ACCESS_KEY;
   if (!accessKey) throw new Error('JWT_ACCESS_KEY is not defined');
 
-  const refreshToken = jwt.sign({ userId: req.user.id }, refreshKey, {
-    // sign options
-    algorithm: 'HS256',
-    expiresIn: '30d',
-    issuer: process.env.JWT_ISSUER,
-    audience: process.env.JWT_AUDIENCE,
-    // domain: ''
-  });
+  const refreshToken = jwt.sign(
+    { userId: req.user.id },
+    refreshKey,
+    refreshTokenOptions
+  );
 
   const accessToken = jwt.sign({ userId: req.user.id }, accessKey, {
     algorithm: 'HS256',
@@ -93,6 +99,14 @@ const refresh = (req: Request, res: Response) => {
       issuer: process.env.JWT_ISSUER,
       audience: process.env.JWT_AUDIENCE,
     });
+
+    const newRefreshToken = jwt.sign(
+      { userId },
+      refreshKey,
+      refreshTokenOptions
+    );
+
+    res.cookie('refreshToken', newRefreshToken, cookieOptions);
 
     return res.status(200).json({ accessToken: newAccessToken });
   } catch {
