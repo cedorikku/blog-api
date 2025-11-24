@@ -100,11 +100,16 @@ const refresh = (req: Request, res: Response) => {
 
     const newAccessToken = jwt.sign({ userId }, accessKey, accessTokenOptions);
 
-    const newRefreshToken = jwt.sign(
-      { userId },
-      refreshKey,
-      refreshTokenOptions
-    );
+    // Issue a new refresh token if less than 1 day remains
+    const expiry = Number(payload.exp);
+    const tomorrow = Math.floor(Date.now() / 1000) + 1 * 24 * 60 * 60;
+    const almostExpired = tomorrow > expiry;
+    let newRefreshToken: string;
+    if (almostExpired) {
+      newRefreshToken = jwt.sign({ userId }, refreshKey, refreshTokenOptions);
+    } else {
+      newRefreshToken = refreshToken;
+    }
 
     res.cookie('refreshToken', newRefreshToken, cookieOptions);
 
