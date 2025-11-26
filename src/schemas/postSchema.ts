@@ -15,6 +15,12 @@ export const createPostSchema = z.object({
     .refine((tags) => tags.every((tag) => isAlphaNumeric.test(tag)), {
       message: 'Tags cannot contain special characters (including spaces)',
     })
+    .refine((tags) => tags.length <= 3, {
+      message: 'Can only have up to 3 tags',
+    })
+    .refine((tags) => tags.every((tag) => tag.length <= 20), {
+      message: 'Each tag can only be 20 characters long',
+    })
     .superRefine((val, ctx) => {
       if (val.length !== new Set(val).size) {
         ctx.addIssue({
