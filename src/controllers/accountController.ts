@@ -74,7 +74,11 @@ const loginPost = async (req: Request, res: Response) => {
 
   res.cookie('refreshToken', refreshToken, cookieOptions);
 
-  res.status(200).json({ accessToken });
+  const user = req.user;
+  res.status(200).json({
+    accessToken,
+    user: { id: user.id, username: user.username, name: user.name },
+  });
 };
 
 const logout = (req: Request, res: Response) => {
@@ -86,7 +90,7 @@ const logout = (req: Request, res: Response) => {
   return res.sendStatus(204);
 };
 
-const refresh = (req: Request, res: Response) => {
+const refresh = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken as string;
   const refreshKey = process.env.JWT_REFRESH_KEY;
   if (!refreshKey) throw new Error('JWT_REFRESH_KEY is not defined');
@@ -113,7 +117,16 @@ const refresh = (req: Request, res: Response) => {
 
     res.cookie('refreshToken', newRefreshToken, cookieOptions);
 
-    return res.status(200).json({ accessToken: newAccessToken });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) return res.sendStatus(401);
+
+    return res.status(200).json({
+      accessToken: newAccessToken,
+      user: { id: user.id, username: user.username, name: user.name },
+    });
   } catch {
     return res.sendStatus(401);
   }
