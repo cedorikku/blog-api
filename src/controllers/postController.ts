@@ -106,8 +106,8 @@ const createPost = async (req: Request, res: Response) => {
         create: tags.map((tagName) => ({
           tag: {
             connectOrCreate: {
-              where: { name: tagName },
-              create: { name: tagName },
+              where: { name: tagName.toLowerCase() },
+              create: { name: tagName.toLowerCase() },
             },
           },
         })),
