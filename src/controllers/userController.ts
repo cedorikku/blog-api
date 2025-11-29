@@ -45,6 +45,7 @@ const getPostsByUsername = async (req: Request, res: Response) => {
             },
           },
         },
+        published: true,
       },
       where: {
         author: { username },
