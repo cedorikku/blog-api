@@ -81,7 +81,7 @@ const getPostsByUsername = async (req: Request, res: Response) => {
     tags: post.tags.map((t) => t.tag),
   }));
 
-  res.status(200).json(posts);
+  res.status(200).json({ user, posts });
 };
 
 export default {
