@@ -76,6 +76,11 @@ const getPostsByUsername = async (req: Request, res: Response) => {
     });
   }
 
+  posts = posts.map((post) => ({
+    ...post,
+    tags: post.tags.map((t) => t.tag),
+  }));
+
   res.status(200).json(posts);
 };
 
