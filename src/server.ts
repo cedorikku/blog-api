@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
+import './environment.js';
 import passport from './config/passport.js';
 import errorHandler from './middlewares/error.js';
 import accountRouter from './routes/accountRouter.js';
