@@ -1,5 +1,7 @@
-import type { User as PrismaUser } from '@prisma/client';
-import type { Post } from '@prisma/client';
+import type {
+  Post,
+  User as PrismaUser,
+} from './generated/prisma-client/client.js';
 
 declare global {
   namespace Express {
